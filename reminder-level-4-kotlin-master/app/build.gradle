@@ -26,8 +26,17 @@ android {
         experimental = true
     }
 
+
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+buildToolsVersion = '29.0.3'
+kotlinOptions {
+    jvmTarget = "1.8"
 }
 
+}
 dependencies {
 
     def room_version = "2.2.4"
