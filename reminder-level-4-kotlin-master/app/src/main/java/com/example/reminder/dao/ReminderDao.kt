@@ -8,10 +8,10 @@ import com.example.reminder.model.Reminder
 interface ReminderDao {
 
     @Query("SELECT * FROM reminderTable")
-    suspend fun getAllReminders(): LiveData<List<Reminder>>
+    fun getAllReminders(): LiveData<List<Reminder>>
 
     @Insert
-    fun insertReminder(reminder: Reminder)
+    suspend fun insertReminder(reminder: Reminder)
 
     @Delete
     suspend fun deleteReminder(reminder: Reminder)
@@ -20,4 +20,3 @@ interface ReminderDao {
     suspend fun updateReminder(reminder: Reminder)
 
 }
-
