@@ -9,30 +9,29 @@ import com.example.reminder.model.Reminder
 
 @Database(entities = [Reminder::class], version = 1, exportSchema = false)
 abstract class ReminderRoomDatabase : RoomDatabase() {
-
     abstract fun reminderDao(): ReminderDao
 
     companion object {
-        private const val DATABASE_NAME = "REMINDER_DATABASE"
+        private const val DB_NAME = "reminderDB"
 
         @Volatile
-        private var reminderRoomDatabaseInstance: ReminderRoomDatabase? = null
+        private var reminderRoomDatabase : ReminderRoomDatabase? = null
 
-        fun getReminderRoomDatabase(context: Context): ReminderRoomDatabase? {
-            if (reminderRoomDatabaseInstance == null) {
-                synchronized(ReminderRoomDatabase::class.java) {
-                    if (reminderRoomDatabaseInstance == null) {
-                        reminderRoomDatabaseInstance = Room.databaseBuilder(
+        fun getReminderRoomDatabase(context: Context) : ReminderRoomDatabase? {
+            if(reminderRoomDatabase != null) return reminderRoomDatabase
+
+            synchronized(ReminderRoomDatabase::class.java) {
+                if(reminderRoomDatabase == null) {
+                    reminderRoomDatabase = Room.databaseBuilder(
                             context.applicationContext,
-                            ReminderRoomDatabase::class.java, DATABASE_NAME
+                            ReminderRoomDatabase::class.java, DB_NAME
                         )
-                            .allowMainThreadQueries()
-                            .build()
-                    }
+                        .build()
+
                 }
             }
-            return reminderRoomDatabaseInstance
+
+            return reminderRoomDatabase
         }
     }
-
 }

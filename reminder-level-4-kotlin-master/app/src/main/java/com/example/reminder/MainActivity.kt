@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -25,8 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val ADD_REMINDER_REQUEST_CODE = 100
 
+const val ADD_REMINDER_REQUEST_CODE = 100
+const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,10 +43,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
 
-//        reminderRepository = ReminderRepository(this)
-
         initViews()
         observeViewModel()
+        viewModel.increment()
     }
 
     private fun initViews() {
