@@ -18,7 +18,7 @@ abstract class ReminderRoomDatabase : RoomDatabase() {
         @Volatile
         private var reminderRoomDatabaseInstance: ReminderRoomDatabase? = null
 
-        fun getDatabase(context: Context): ReminderRoomDatabase? {
+        fun getReminderRoomDatabase(context: Context): ReminderRoomDatabase? {
             if (reminderRoomDatabaseInstance == null) {
                 synchronized(ReminderRoomDatabase::class.java) {
                     if (reminderRoomDatabaseInstance == null) {
