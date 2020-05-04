@@ -4,4 +4,11 @@
     <string name="title_activity_add">AddActivity</string>
     <string name="add_your_reminder">Add your Reminder</string>
     <string name="reminder">Reminder</string>
+    <string name="list_reminders">Reminders</string>
+    <string name="reminders_subheader">See all reminders here</string>
+    <string name="start_counting">Start counting!</string>
+    <string name="title_add_reminder">Add your reminder here</string>
+    <string name="not_valid_reminder">Invalid reminder textt!</string>
+    <string name="fill_in_reminder">Fill in your reminder here</string>
+    <string name="title_activity_add_reminder">Add reminder</string>
 </resources>

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -21,32 +23,42 @@ import kotlinx.android.synthetic.main.content_main.*
 const val ADD_REMINDER_REQUEST_CODE = 100
 const val TAG = "MainActivity"
 
+
 class MainActivity : AppCompatActivity() {
 
-    private val reminders = arrayListOf<Reminder>()
-    private val reminderAdapter = ReminderAdapter(reminders)
+    private lateinit var reminders: ArrayList<Reminder>
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var reminderAdapter: ReminderAdapter
+    private lateinit var viewManager: RecyclerView.LayoutManager
+
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setSupportActionBar(toolbar)
-        setTitle(R.string.app_name)
 
-        initViews()
+        //count example
+        countBtn.setOnClickListener {
+            viewModel.increment()
+        }
+
+        recyclerView = findViewById(R.id.rvReminders)
+
+        reminders = arrayListOf()
+
+        reminderAdapter = ReminderAdapter(reminders)
+        viewManager = LinearLayoutManager(this)
+        createItemTouchHelper().attachToRecyclerView(recyclerView)
+
         observeViewModel()
-    }
 
-    private fun initViews() {
-        // Initialize the recycler view with a linear layout manager, adapter, decorator and swipe callback.
-        rvReminders.layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-        rvReminders.adapter = reminderAdapter
-        rvReminders.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
-        createItemTouchHelper().attachToRecyclerView(rvReminders)
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = reminderAdapter
+        }
 
-
-        // Clicking floating action button will call startAddActivity.
         fab.setOnClickListener {
             startAddActivity()
         }
@@ -59,9 +71,55 @@ class MainActivity : AppCompatActivity() {
             reminderAdapter.notifyDataSetChanged()
         })
 
+
+        // count example
+        viewModel.count.observe(this, Observer{ count ->
+            countTxt.text = String.format("Count: %d" , count)
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                ADD_REMINDER_REQUEST_CODE -> {
+                    data?.let {safeData ->
+                        val reminder = safeData.getParcelableExtra<Reminder>(EXTRA_REMINDER)
+                        reminder?.let { safeReminder ->
+                            viewModel.insertReminder(safeReminder)
+                        } ?: run {
+                            Log.e(TAG, "reminder is null")
+                        }
+                    } ?: run {
+                        Log.e(TAG, "empty intent data received")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startAddActivity() {
+        val intent = Intent(this, AddActivity::class.java)
+        startActivityForResult(intent, ADD_REMINDER_REQUEST_CODE)
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     /**
      * Create a touch helper to recognize when a user swipes an item from a recycler view.
@@ -88,58 +146,10 @@ class MainActivity : AppCompatActivity() {
                 val position = viewHolder.adapterPosition
                 val reminderToDelete = reminders[position]
 
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    withContext(Dispatchers.IO) {
-//                        reminderRepository.deleteReminder(reminderToDelete)
-//                    }
-//                    getRemindersFromDatabase()
-//                }
                 viewModel.deleteReminder(reminderToDelete)
             }
         }
         return ItemTouchHelper(callback)
     }
 
-    /**
-     * Start [AddActivity].
-     */
-    private fun startAddActivity() {
-        val intent = Intent(this, AddActivity::class.java)
-        startActivityForResult(
-                intent,
-                ADD_REMINDER_REQUEST_CODE
-        )
-    }
-
-
-
-
-
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                ADD_REMINDER_REQUEST_CODE -> {
-                    data?.let {safeData ->
-                        val reminder = safeData.getParcelableExtra<Reminder>(EXTRA_REMINDER)
-                        reminder?.let { safeReminder ->
-                            viewModel.insertReminder(safeReminder)
-                        } ?: run {
-                            Log.e(TAG, "reminder is null")
-                        }
-                    } ?: run {
-                        Log.e(TAG, "empty intent data received")
-                    }
-                }
-            }
-        }
-    }
-
-
-    companion object {
-        const val ADD_REMINDER_REQUEST_CODE = 100
-    }
 }
