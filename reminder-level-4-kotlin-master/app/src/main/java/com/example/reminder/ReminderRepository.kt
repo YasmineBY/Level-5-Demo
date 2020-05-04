@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-\
+
 class ReminderRepository(context: Context) {
     private var reminderDao: ReminderDao?
 
@@ -23,11 +23,11 @@ class ReminderRepository(context: Context) {
 
 
     suspend fun deleteReminder(reminder: Reminder) {
-        reminderDao.deleteReminder(reminder)
+        reminderDao?.deleteReminder(reminder)
     }
 
     suspend fun updateReminder(reminder: Reminder) {
-        reminderDao.updateReminder(reminder)
+        reminderDao?.updateReminder(reminder)
     }
 
 }
