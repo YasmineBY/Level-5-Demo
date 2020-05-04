@@ -1,8 +1,10 @@
-package com.example.reminder
+package com.example.reminder.vm
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.reminder.model.Reminder
+import com.example.reminder.repositories.ReminderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,7 +1,8 @@
-package com.example.reminder
+package com.example.reminder.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.reminder.model.Reminder
 
 @Dao
 interface ReminderDao {

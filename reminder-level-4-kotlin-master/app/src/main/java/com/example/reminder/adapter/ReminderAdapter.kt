@@ -1,10 +1,11 @@
-package com.example.reminder
+package com.example.reminder.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reminder.R
+import com.example.reminder.model.Reminder
 import kotlinx.android.synthetic.main.item_reminder.view.*
 
 class ReminderAdapter(private val reminders: List<Reminder>) : RecyclerView.Adapter<ReminderAdapter.ViewHolder>() {
